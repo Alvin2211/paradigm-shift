@@ -1,0 +1,2 @@
+0000000000000000000000000000000000000000 398ffd40bacf28c452a6d2523274ffdcb726cf2b Alvin <alvinthomas015@gmail.com> 1760535693 +0530	commit (initial): first commit made nb and hp
+398ffd40bacf28c452a6d2523274ffdcb726cf2b f6f5ae0609fb849d0c8cbf470c2c67a59495ebda Alvin <alvinthomas015@gmail.com> 1762345975 +0530	commit: feat: add post-login homepage ui with clerk authentication
