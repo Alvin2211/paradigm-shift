@@ -29,13 +29,13 @@ def clean_text(text):
     text = re.sub(r"[^a-zA-Z0-9@+.,\- ]", " ", text) 
     text = text.strip()
     return text
-stop_words = set(stopwords.words("english"))
 
+stop_words = set(stopwords.words("english"))
 def remove_stopwords(text):
     return " ".join([word for word in text.split() if word.lower() not in stop_words])
 
 
 if __name__ == "__main__":
-    pdf_path = "resume01.pdf" 
+    pdf_path = "" 
     parsed_data = parse_resume(pdf_path)
     print(json.dumps(parsed_data, indent=4))

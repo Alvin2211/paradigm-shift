@@ -17,5 +17,8 @@ app.use(express.static('public'));
 app.use(cookieParser());
 
 // abhi routes banane rehte hai idhar
+import resumeRoutes from './routes/resume.route.js'
+
+app.use('/api',resumeRoutes);
 
 export { app };

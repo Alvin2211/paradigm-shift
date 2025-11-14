@@ -12,11 +12,9 @@ const Homepage = () => {
 
         if (file){
             setSelectedFile(file);
-            console.log("Selected file:",file);
         }
         else{
             setSelectedFile(null);
-            console.log("No file selected");
         }
     }
 
@@ -26,9 +24,9 @@ const Homepage = () => {
 
     const handleSubmitClick= async ()=>{
             const formData=new FormData();
-            formData.append("resume",selectedFile);
+            formData.append("file",selectedFile);
             try{
-                const response=await fetch(`${import.meta.env.VITE_API_BASE_URI}/resume/uploadResume`,{
+                const response=await fetch(`${import.meta.env.VITE_API_BASE_URI}/uploadresume`,{
                     method:"POST",
                     body:formData,
                 });
