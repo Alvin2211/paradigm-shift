@@ -26,12 +26,14 @@ const Homepage = () => {
             const formData=new FormData();
             formData.append("file",selectedFile);
             try{
-                const response=await fetch(`${import.meta.env.VITE_API_BASE_URI}/uploadresume`,{
+                const response=await fetch(`${import.meta.env.VITE_API_BASE_URL}/uploadresume`,{
                     method:"POST",
                     body:formData,
                 });
                 if (response.ok){
                     alert("File uploaded successfully");
+                    const data=await response.json();
+                    console.log(data.data);
                     setSelectedFile(null);
                 }
                 else{

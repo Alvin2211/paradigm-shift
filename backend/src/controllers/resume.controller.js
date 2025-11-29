@@ -27,11 +27,10 @@ const parseResume = async (req, res,) => {
                 }
             );
 
-            const parsedData = pythonResponse.data;
-            console.log(parsedData)
+            
             res.status(200).json({
                 success: true,
-                data: parsedData,
+                data: pythonResponse.data,
             });
                
         }

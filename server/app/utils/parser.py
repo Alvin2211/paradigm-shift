@@ -15,9 +15,8 @@ def parse_resume(pdf_path):
     cleaned_text = clean_text(text)
     cleaned_text = remove_stopwords(cleaned_text)
 
-    resume_data = {
-        "extracted_text": cleaned_text
-    }
+    resume_data = cleaned_text
+    
 
 
     return resume_data

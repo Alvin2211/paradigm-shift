@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.utils.parser import parse_resume as parse_pdf_resume
 import os
@@ -16,16 +16,11 @@ app.add_middleware(
 def home():
     return {"status": "Python Microservice Running"}
 
-@app.post("/api1/parse_resume")
-async def parse_resume_endpoint(file: UploadFile = File(...)):
-    temp_path = f"temp_{file.filename}"
 
-    with open(temp_path, "wb") as f:
-        f.write(await file.read())
+from app.routes.resume_route import router as resume_router
 
-    parsed = parse_pdf_resume(temp_path)
+app.include_router(resume_router)
 
-    os.remove(temp_path)
+# @app.post("/api1/parse_resume")
 
-    return parsed
     
