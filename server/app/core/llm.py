@@ -1,8 +1,8 @@
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from app.core.config import settings
 
-llm = ChatOpenAI(
-    model="gpt-4o",
+llm = ChatGroq(
+    model="llama-3.3-70b-versatile",  
     temperature=0,
-    api_key=settings.OPENAI_API_KEY
+    groq_api_key=settings.GROQ_API_KEY
 )
