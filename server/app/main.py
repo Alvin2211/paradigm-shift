@@ -21,6 +21,5 @@ from app.routes.resume_route import router as resume_router
 
 app.include_router(resume_router)
 
-# @app.post("/api1/parse_resume")
 
     

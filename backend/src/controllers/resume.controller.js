@@ -1,8 +1,8 @@
 import { ApiError } from "../utils/ApiError.js";
-//yahan model inport krio after making it 
 import axios from "axios";
 import fs from "fs";
 import FormData from "form-data";
+import  {Resume}  from "../models/resume.model.js";
 
 const parseResume = async (req, res,) => {
     try {
@@ -27,16 +27,24 @@ const parseResume = async (req, res,) => {
                 }
             );
 
+            const userId= "test-user";
+            const resumeData=pythonResponse.data;
+
+            const savedResume=await Resume.findOneAndUpdate(
+                {userId:userId},
+                {resumeData},
+                {new:true,upsert:true}
+            )
             
             res.status(200).json({
                 success: true,
-                data: pythonResponse.data,
+                data: savedResume,
             });
                
         }
         catch (pythonError) {
             console.error("Error calling Python service:", pythonError);
-            throw new ApiError(500, "Failed to parse your resume :( ");
+            throw new ApiError(500, "Failed to parse and run llm on your resume :( ");
         }
         finally {
             fs.unlink(tempFilePath, (err) => {
