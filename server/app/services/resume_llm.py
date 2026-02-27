@@ -1,61 +1,110 @@
-from langchain_core.prompts import ChatPromptTemplate
 from app.core.llm import llm
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.prompts import ChatPromptTemplate
 
-def run_resume_llm(extracted_text: str):
+def run_resume_llm(extracted_text: str) -> dict:
+    """
+    Extract resume data and generate 3 career recommendations using LLM.
+    Returns a Python Dictionary (parsed JSON).
+    """
+
+    parser = JsonOutputParser()
 
     json_schema = """
-{
-  "extracted_data": {
-    "name": "<applicant_name>",
-    "email": "<email_address>",
-    "years_of_experience": "<number_or_string_e.g._5.5_years>",
-    "phone_number": "<phone_number>"
-  },
-  {
-    "career_recommend": [
-      {
-        "career_title": "<suggested_job_title>",
-        "designation": "<suggested_designation_e.g._Tech/Management>",
-        "required_skills": [
-          "<skill_1_specialized_knowledge>",
-          "<skill_2_tool_or_framework>",
-          "<skill_3_core_principle>"
+    {
+      "extracted_data": {
+        "name": "<applicant_name>",
+        "email": "<email_address>",
+        "phone_number": "<phone_number>",
+        "years_of_experience": "<number_or_string>",
+        "education": [
+          {
+            "degree": "<degree_name>",
+            "institution": "<university_or_college>",
+            "year": "<graduation_year>"
+          }
         ],
-        "career_description": "<concise_summary_of_ the_role_and_its_relevance_to_full_stack>",
-        "global_demand": "<1-2_sentence_assessment_of_demand_and_growth_in_the_next_3_years>",
-        "related_jobs": [
-          "<alternative_job_1_similar_focus>",
-          "<alternative_job_2_senior_progression>"
-        ]
+        "skills": ["<skill_1>", "<skill_2>", "<skill_3>"],
+        "certifications": ["<cert_1>", "<cert_2>"],
+        "languages": ["<language_1>", "<language_2>"],
+        "summary": "<brief_professional_summary_extracted_from_resume>"
       },
-      // Second career recommendation object here (e.g., AI Engineer)
-      // Third career recommendation object here (e.g., ML Engineer)
-    ]
-  },
-}
-"""
+      "career_recommend": [
+        {
+          "career_title": "<job_title>",
+          "designation": "<Tech_or_Management_or_Creative_etc>",
+          "required_skills": ["<skill_1>", "<skill_2>", "<skill_3>"],
+          "skills_to_learn": ["<missing_skill_1>", "<missing_skill_2>"],
+          "career_description": "<2_to_3_sentence_summary_of_this_career_path>",
+          "global_demand": "<High_or_Medium_or_Low_with_short_forecast>",
+          "average_salary_usd": "<salary_range_per_year>",
+          "related_jobs": ["<related_job_1>", "<related_job_2>", "<related_job_3>"],
+          "match_score": "<percentage_match_based_on_resume_skills>"
+        },
+        {
+          "career_title": "<job_title>",
+          "designation": "<Tech_or_Management_or_Creative_etc>",
+          "required_skills": ["<skill_1>", "<skill_2>", "<skill_3>"],
+          "skills_to_learn": ["<missing_skill_1>", "<missing_skill_2>"],
+          "career_description": "<2_to_3_sentence_summary_of_this_career_path>",
+          "global_demand": "<High_or_Medium_or_Low_with_short_forecast>",
+          "average_salary_usd": "<salary_range_per_year>",
+          "related_jobs": ["<related_job_1>", "<related_job_2>", "<related_job_3>"],
+          "match_score": "<percentage_match_based_on_resume_skills>"
+        },
+        {
+          "career_title": "<job_title>",
+          "designation": "<Tech_or_Management_or_Creative_etc>",
+          "required_skills": ["<skill_1>", "<skill_2>", "<skill_3>"],
+          "skills_to_learn": ["<missing_skill_1>", "<missing_skill_2>"],
+          "career_description": "<2_to_3_sentence_summary_of_this_career_path>",
+          "global_demand": "<High_or_Medium_or_Low_with_short_forecast>",
+          "average_salary_usd": "<salary_range_per_year>",
+          "related_jobs": ["<related_job_1>", "<related_job_2>", "<related_job_3>"],
+          "match_score": "<percentage_match_based_on_resume_skills>"
+        }
+      ]
+    }
+    """
 
     prompt = ChatPromptTemplate.from_messages([
-        ("system",
-        "You are a dual-function expert: a Resume Data Extractor and a Career Recommendation Engine. You have to "
-        "recommend an ideal designation and and career path "
-        "Analyze the resume text and output ONLY valid JSON. No explanations, no markdown."
+        (
+            "system",
+            "You are a Resume Parsing and Career Recommendation AI. "
+            "Your task is to extract structured resume data and suggest exactly 3 career paths.\n"
+            "STRICT RULES:\n"
+            "- Output ONLY valid JSON. No extra text, no markdown, no code blocks.\n"
+            "- Follow the JSON schema exactly as provided.\n"
+            "- All 3 career recommendations must have identical key names.\n"
+            "- The global_demand must specify the demand in the near future ie in the next 2-3 years.\n"
+            "- match_score should be a realistic estimate based on the resume skills vs required skills.\n"
+            "- skills_to_learn should list skills the candidate is currently missing for that career.\n\n"
+            "CAREER DIVERSITY RULES (strictly enforced):\n"
+            "- Each of the 3 careers MUST belong to a clearly different domain or specialization.\n"
+            "- Do NOT recommend careers that heavily overlap in responsibilities or required skills.\n"
+            "- For example, never recommend both 'Full Stack Developer' and 'Web Developer' together — they are too similar.\n"
+            "- Spread recommendations across different tracks, for example: one engineering role, one data/AI role, one cloud/DevOps or management role.\n"
+            "- The required_skills list for each career must be meaningfully different from the others.\n"
+            "- Think of it as giving the candidate 3 genuinely different future paths, not 3 variations of the same job.\n"
+            "{format_instructions}"
         ),
-
-        ("user",
-        "### INPUT RESUME TEXT:\n"
-        "{extracted_text}\n\n"
-        "### REQUIRED JSON SCHEMA:\n"
-        "{json_schema}"
+        (
+            "user",
+            "RESUME TEXT:\n{extracted_text}\n\n"
+            "REQUIRED JSON SCHEMA:\n{json_schema}"
         )
     ])
 
-    chain = prompt | llm
+    chain = prompt | llm | parser
 
-    # FIXED: Correct variable names
-    result = chain.invoke({
-        "extracted_text": extracted_text,
-        "json_schema": json_schema
-    })
+    try:
+        result = chain.invoke({
+            "extracted_text": extracted_text,
+            "json_schema": json_schema,
+            "format_instructions": parser.get_format_instructions()
+        })
+        return result
 
-    return result.content
+    except Exception as e:
+        print(f"Error parsing JSON: {e}")
+        return {"error": "Failed to parse resume data", "details": str(e)}

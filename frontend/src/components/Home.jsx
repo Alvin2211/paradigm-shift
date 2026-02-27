@@ -6,15 +6,14 @@ const Home = () => {
   return (
   <section className="relative min-h-screen overflow-hidden pt-24">
 
-    <BackgroundRippleEffect className="h-full w-full  " />
 
-    <div className="absolute inset-0 bg-gradient-to-b from-[#0b0b0d] via-[#0b0b0d] to-black" />
+    <div className="absolute inset-0 z-10 bg-gradient-to-b from-[#0b0b0d] via-[#0b0b0d] to-black" />
 
-    <div className="relative z-10 max-w-7xl mx-auto px-6">
+    <div className="relative z-20 max-w-7xl mx-auto px-6">
       <div className="grid lg:grid-cols-2 gap-16 items-center">
 
         <div>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-sm  backdrop-blur-md mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-sm text-white backdrop-blur-md mb-8">
             <Sparkles className="w-4 h-4 text-[#7c7cff]" />
             AI Powered Career Guidance
           </div>
