@@ -172,10 +172,8 @@ const genresume = async (req, res) => {
         if (!userData) {
             throw new ApiError(400, "No data provided");
         }
-        console.log(userData);
         const html = generatehtml(userData);
         const browser = await puppeteer.launch({ headless: true });
-
         const page = await browser.newPage();
         await page.setContent(html, { waitUntil: "networkidle0" });
         const pdfbuffer = await page.pdf({
@@ -189,11 +187,14 @@ const genresume = async (req, res) => {
                 right: "15mm"
             }
         });
+        if (!pdfbuffer) {
+            throw new ApiError(500, "Failed to generate PDF,try again later");
+        }
         await browser.close();
-
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", "attachment; filename=resume.pdf");
         res.send(pdfbuffer);
+        res.status(200).json({ success: true, message: "Resume generated successfully" });
 
     } catch (error) {
         console.log("Error:", error);

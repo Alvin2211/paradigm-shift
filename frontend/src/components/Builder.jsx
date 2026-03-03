@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LoaderOne } from "@/components/ui/loader";
 const STEPS = ["Personal", "Experience", "Education", "Projects", "Skills"];
+import { useNavigate } from "react-router-dom";
 
 const defaultExperience = () => ({
   id: Date.now(),
@@ -29,6 +30,8 @@ export default function Builder() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isResult, setIsResult] = useState(null);
+  const [pdfurl, setPdfUrl] = useState(null);
+  const navigate = useNavigate();
 
   const set = (field, value) => setData(d => ({ ...d, [field]: value }));
 
@@ -94,20 +97,32 @@ export default function Builder() {
       }
 
       const blob = await response.blob();
+      if(!blob) {
+        throw new Error("No PDF data received");
+      }
+
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "resume.pdf";
-      a.click();
+      setPdfUrl(url);
+      
 
     } catch (error) {
 
     }
   };
+  const handleDownload = () => {
+    if (pdfurl) {
+      const link = document.createElement("a");
+      link.href = pdfurl;
+      link.download = "resume.pdf"; 
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
   return (
-    <section className="min-h-screen bg-[#0e0f11] text-[#f0ede8] pb-20">
+    <section className="min-h-screen bg-[#0e0f11] text-[#f0ede8] pb-10 ">
       {!isResult && (
-        <div className="relative max-w-4xl mx-auto px-6 pt-12 z-10">
+        <div className="relative max-w-4xl mx-auto px-6  z-10">
 
           <div className="text-center px-6 pt-12 pb-6 border-b border-[#2a2d34]">
             <div className="inline-flex items-center gap-2.5 mb-2">
@@ -297,7 +312,7 @@ export default function Builder() {
                 <div className="text-[#7c7cff] text-4xl mb-3">✦</div>
                 <h2 className="text-2xl font-bold mb-2 mt-0">Resume Data Ready!</h2>
                 <p className="text-[#7a7f8e] text-sm leading-relaxed mb-5">
-                  Your data has been collected. In the full implementation, this would be sent to the backend to generate your LaTeX PDF.
+                  Your data has been collected. 
                 </p>
                 <pre className="bg-[#0e0f11] border border-[#2a2d34] rounded-lg p-4 text-[11px] text-[#7c7cff] overflow-x-auto max-h-72 overflow-y-auto">
                   {JSON.stringify(data, null, 2)}
@@ -331,12 +346,24 @@ export default function Builder() {
           )}
         </div >)}
       {isResult && (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="bg-[#16181c] border border-[#2a2d34] rounded-2xl p-10 max-w-xl w-full flex flex-col items-center gap-6">
+        <div className="flex items-center justify-center min-h-screen ">
+          <div className="bg-[#16181c] border border-[#2a2d34] rounded-2xl p-5 max-w-4xl w-full flex flex-col items-center gap-5">
             <h2 className="text-2xl font-bold mb-2 mt-0 text-[#7c7cff]">Your Resume is Ready!</h2>
-            <p className="text-[#7a7f8e] text-sm leading-relaxed mb-5 text-center">
-              Your resume PDF has been generated successfully. In a full implementation, you would see a preview here with options to download or edit.
-            </p>
+            <iframe src={pdfurl} frameborder="0" className="w-full h-[600px]" loading="eager"></iframe>
+            <div className="flex items-center gap-5">
+              <button onClick={handleDownload} className="mt-4 px-6 py-3 rounded-xl text-sm font-bold bg-[#7c7cff] text-[#0e0f11] border-none cursor-pointer hover:opacity-90 transition-opacity">
+              Download Resume PDF
+            </button>
+            <button className="mt-4 px-6 py-3 rounded-xl text-sm font-bold bg-[#f0ede8] text-[#0e0f11] border-none cursor-pointer hover:opacity-90 transition-opacity"
+              onClick={() => {
+                setSubmitted(false);
+                setIsResult(false);
+                navigate("/builder");
+              }}
+            >
+              Generate Another Resume
+            </button>
+            </div>
           </div>
         </div>
       )}

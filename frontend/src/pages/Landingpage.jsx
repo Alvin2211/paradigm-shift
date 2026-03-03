@@ -6,7 +6,7 @@ const Landingpage = () => {
       <div className="min-h-screen">
         <Navbar />
         <main>
-          <section className="home ">   
+          <section className="landingpage ">   
             <Home />
           </section>
         </main>
