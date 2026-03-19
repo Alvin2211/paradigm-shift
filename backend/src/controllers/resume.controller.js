@@ -6,7 +6,7 @@ import { Resume } from "../models/resume.model.js";
 
 const parseResume = async (req, res,) => {
     try {
-        const userId = req.body.userId;
+        const userId = req.auth?.userId;    
         if (!userId) throw new ApiError(400, "not authenticated");
 
         if (!req.file) throw new ApiError(400, "No file uploaded");
@@ -29,12 +29,11 @@ const parseResume = async (req, res,) => {
                     maxContentLength: Infinity
                 }
             );
-            console.log("Python response data:", JSON.stringify(pythonResponse.data));
 
             const rawData = pythonResponse.data;
             const resumeData = Array.isArray(rawData)
                 ? rawData
-                : rawData.career_recommend      
+                : rawData.career_recommend
                 ?? rawData.careers
                 ?? rawData.career_options
                 ?? Object.values(rawData)[0];

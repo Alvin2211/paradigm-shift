@@ -59,12 +59,9 @@ celerybeat.pid
 
 # Environments
 .env
-.venv
-env/
+.venv   
 venv/
-ENV/
-env.bak/
-venv.bak/
+
 
 # Type checker
 .mypy_cache/
@@ -93,8 +90,6 @@ out/
 
 # Environment variables
 .env.local
-.env.*
-!.env.example
 
 
 # ---------------------------------------
@@ -121,3 +116,4 @@ Thumbs.db
 # ---------------------------------------
 server/app/__pycache__/
 server/app/utils/__pycache__/
+

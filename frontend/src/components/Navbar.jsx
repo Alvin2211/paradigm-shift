@@ -17,10 +17,12 @@ const Navbar = () => {
   ];
 
   const handleNavClick = (path) => {
-    if (!isSignedIn) return;
-    navigate(path);
-    setIsMenuOpen(false);
-  };
+  if (!isSignedIn) {
+    navigate("/"); 
+    return;
+  }
+  navigate(path);
+};
 
   return (
     <header className="sticky top-0 z-50 bg-[#0e0f11] backdrop-blur-md border-b border-white/10">
@@ -44,7 +46,7 @@ const Navbar = () => {
                 onClick={() => handleNavClick(path)}
                 title={!isSignedIn ? 'Sign in to access this page' : label}
                 className={`relative transition flex items-center gap-1
-                  after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#7c7cff] after:transition-all
+                  after:absolute after:left-0 after:-bottom-1 after:h-2px after:w-0 after:bg-[#7c7cff] after:transition-all
                   ${isSignedIn
                     ? 'hover:text-white hover:after:w-full cursor-pointer'
                     : 'hover:text-white hover:after:w-full cursor-pointer'

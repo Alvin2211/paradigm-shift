@@ -4,10 +4,12 @@ import { Upload } from "lucide-react";
 import { useState, useRef } from "react";
 import { LoaderOne} from "@/components/ui/loader";
 import CareerResults from "../components/CareerResults";
+import { useAuth} from "@clerk/clerk-react";
 
 
 
 const Homepage = () => {
+    const { getToken, isLoaded, isSignedIn } = useAuth();
     const { user } = useUser();
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
@@ -30,6 +32,17 @@ const Homepage = () => {
     }
 
     const handleSubmitClick = async () => {
+        if (!isLoaded || !isSignedIn) {
+            alert("User not authenticated");
+            return;
+        }
+
+        const token = await getToken();
+        if (!token) {
+            alert("Token not found");
+            return;
+        }
+
         if (!selectedFile) {
             alert("Please select a file first");
             return;
@@ -37,22 +50,27 @@ const Homepage = () => {
 
         const formData = new FormData();
         formData.append("file", selectedFile);
-        formData.append("userId", user?.id);
+
         try {
             setLoading(true);
-
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/uploadresume`, {
-                method: "POST",
-                body: formData,
-                credentials: "include",
-            });
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/uploadresume`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`, 
+                    },
+                    body: formData,
+                    
+                }
+            );
 
             const datafetched = await response.json();
-            if(response.ok){
+
+            if (response.ok) {
                 setCareerResults(datafetched.data.resumeData);
-                console.log("Career options :", datafetched.data.resumeData);
-            }
-            else {
+            } else {
+                console.error(datafetched);
                 alert("File upload failed");
             }
         } catch (error) {
@@ -78,10 +96,10 @@ const Homepage = () => {
 
                     </h1>
 
-                    {!careerResults && !loading &&(
+                    {!careerResults && !loading && (
                         <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold text-center text-neutral-200 mb-5 ">
-                        Tell us about yourself {user?.firstName}
-                    </h2>
+                            Tell us about yourself {user?.firstName}
+                        </h2>
                     )}
                     <div className="flex items-center justify-center ">
                         {!careerResults && !loading && (
@@ -124,8 +142,8 @@ const Homepage = () => {
 
                         {loading && (
                             <div className="flex flex-col gap-10 items-center justify-center min-h-[50vh] z-10">
-                            <LoaderOne  />
-                            <p className="text-white mt-3 text-sm">Analyzing resume...</p>
+                                <LoaderOne />
+                                <p className="text-white mt-3 text-sm">Analyzing resume...</p>
                             </div>
                         )}
                     </div>
