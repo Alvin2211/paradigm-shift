@@ -244,3 +244,15 @@
     @apply bg-background text-foreground; 
     } 
 }
+
+@layer utilities {
+  .bg-dot-pattern {
+    background-image: radial-gradient(
+      circle at 0.5px 0.5px,
+      rgba(255, 255, 255, 0.2) 0.5px,
+      transparent 0
+    );
+    background-size: 8px 8px;
+    background-repeat: repeat;
+  }
+}

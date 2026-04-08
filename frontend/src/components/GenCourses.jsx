@@ -61,7 +61,7 @@ const GenCourses = () => {
 
     return (
 
-        <section className='min-h-screen bg-[#0e0f11] text-white py-8'>
+        <section className='bg-dot-pattern min-h-screen bg-black text-white py-8'>
             {showError && (
                 <Alert className="max-w-md border-amber-200 bg-amber-50 text-amber-900">
                     <AlertTriangleIcon />
@@ -138,8 +138,8 @@ const GenCourses = () => {
                                     <div className='col-span-2'><p className='text-[10px] uppercase tracking-wide text-gray-100'>Duration</p><p className='text-sm font-medium text-gray-300'>{course["Duration"]}</p></div>
                                 </div>
 
-                                <a href={`https://www.coursera.org/${mpp[course["Learning Product"]]}`} className='mt-auto text-center text-xs font-medium bg-blue-50 text-blue-800 hover:bg-blue-100 rounded-md py-1.5 px-3 transition-colors'>
-                                    Checkout in Coursera →  
+                                <a href={`https://www.coursera.org/search?query=${course["Title"].toLowerCase().replace(/\s+/g, '%20')}`} className='mt-auto text-center text-xs font-medium bg-blue-50 text-blue-800 hover:bg-blue-100 rounded-md py-1.5 px-3 transition-colors'>
+                                    Go to Course →
                                 </a>
 
                             </div>

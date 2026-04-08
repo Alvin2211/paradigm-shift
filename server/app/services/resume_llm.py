@@ -63,14 +63,20 @@ def run_resume_llm(extracted_text: str) -> dict:
           "related_jobs": ["<related_job_1>", "<related_job_2>", "<related_job_3>"],
           "match_score": "<percentage_match_based_on_resume_skills>"
         }
-      ]
+      ],
+      ats_analysis": {
+        "ats_score": "<score_out_of_100>",
+        "strengths": ["<strength_1>", "<strength_2>"],
+        "errors": ["<error_1>", "<error_2>", "<error_3>"],
+        "improvements": ["<fix_1>", "<fix_2>", "<fix_3>"]
+      }
     }
     """
 
     prompt = ChatPromptTemplate.from_messages([
         (
             "system",
-            "You are a Resume Parsing and Career Recommendation AI. "
+            "You are a Resume Parsing, ATS Analyser and Career Recommendation AI. "
             "Your task is to extract structured resume data and suggest exactly 3 career paths.\n"
             "STRICT RULES:\n"
             "- Output ONLY valid JSON. No extra text, no markdown, no code blocks.\n"
@@ -86,6 +92,12 @@ def run_resume_llm(extracted_text: str) -> dict:
             "- Spread recommendations across different tracks, for example: one engineering role, one data/AI role, one cloud/DevOps or management role.\n"
             "- The required_skills list for each career must be meaningfully different from the others.\n"
             "- Think of it as giving the candidate 3 genuinely different future paths, not 3 variations of the same job.\n"
+            " ATS RULES:\n"
+            "- Calculate an ATS score out of 100 based on formatting, keywords, clarity, and structure.\n"
+            "- Identify 3 to 4 critical errors that reduce ATS score.\n"
+            "- Provide actionable improvements to fix those errors.\n"
+            "- Be realistic: most resumes score between 50–85 unless exceptional.\n"
+            "- Penalize missing keywords, poor formatting, no metrics, vague descriptions.\n"
             "{format_instructions}"
         ),
         (

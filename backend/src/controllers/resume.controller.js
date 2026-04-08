@@ -6,7 +6,7 @@ import { Resume } from "../models/resume.model.js";
 
 const parseResume = async (req, res,) => {
     try {
-        const userId = req.auth?.userId;    
+        const userId = req.auth?.userId;
         if (!userId) throw new ApiError(400, "not authenticated");
 
         if (!req.file) throw new ApiError(400, "No file uploaded");
@@ -31,20 +31,18 @@ const parseResume = async (req, res,) => {
             );
 
             const rawData = pythonResponse.data;
-            const resumeData = Array.isArray(rawData)
-                ? rawData
-                : rawData.career_recommend
-                ?? rawData.careers
-                ?? rawData.career_options
-                ?? Object.values(rawData)[0];
 
-            if (!Array.isArray(resumeData)) {
-                throw new ApiError(500, "Unexpected response format from LLM service");
+            if (!rawData.career_recommend || !Array.isArray(rawData.career_recommend)) {
+                throw new ApiError(500, "Invalid response format from Python service");
             }
 
             const savedResume = await Resume.findOneAndUpdate(
                 { userId },
-                { resumeData },
+                {
+                    extractedData: rawData.extracted_data,
+                    careerData: rawData.career_recommend,
+                    atsAnalysis: rawData.ats_analysis,
+                },
                 { new: true, upsert: true }
             );
 

@@ -4,10 +4,10 @@ import img1 from "../images/img1.jpg";
 
 const Home = () => {
   return (
-    <section className="relative min-h-screen overflow-hidden pt-24">
+    <section className=" relative min-h-screen overflow-hidden pt-24">
 
 
-      <div className="absolute inset-0 z-10 bg-linear-to-b from-[#0b0b0d] via-[#0b0b0d] to-black" />
+      <div className="bg-dot-pattern absolute inset-0 z-10 bg-black" />
 
       <div className="relative z-20 max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16 items-center">

@@ -136,7 +136,9 @@ export default function Builder() {
     }
   };
   return (
-    <section className="min-h-screen bg-[#0e0f11] text-[#f0ede8] pb-10 ">
+    <section className="bg-dot-pattern min-h-screen bg-black text-[#f0ede8] pb-10" >
+    
+
       {!isResult && (
         <div className="relative max-w-4xl mx-auto px-6  z-10">
 
@@ -323,8 +325,8 @@ export default function Builder() {
           </div>
 
           {submitted && (
-            <div className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 p-6">
-              <div className="bg-[#16181c] border border-[#2a2d34] rounded-2xl p-10 max-w-xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="bg-dot-pattern fixed inset-0 bg-black/75 flex items-center justify-center  p-6   z-50">
+              <div className="bg-black border border-neutral-800 rounded-2xl p-10 max-w-xl w-full max-h-[80vh] overflow-y-auto ">
                 <div className="text-[#7c7cff] text-4xl mb-3">✦</div>
                 <h2 className="text-2xl font-bold mb-2 mt-0">Resume Data Ready!</h2>
                 <p className="text-[#7a7f8e] text-sm leading-relaxed mb-5">
@@ -362,7 +364,7 @@ export default function Builder() {
           )}
         </div >)}
       {isResult && (
-        <div className="flex items-center justify-center min-h-screen ">
+        <div className="flex items-center justify-center min-h-screen backdrop-blur-sm mt-20 ">
           <div className="bg-[#16181c] border border-[#2a2d34] rounded-2xl p-5 max-w-4xl w-full flex flex-col items-center gap-5">
             <h2 className="text-2xl font-bold mb-2 mt-0 text-[#7c7cff]">Your Resume is Ready!</h2>
             <iframe src={pdfurl} frameborder="0" className="w-full h-[600px]" loading="eager"></iframe>
