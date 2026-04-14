@@ -25,4 +25,8 @@ import courseRoutes from './routes/course.route.js';
 
 app.use('/api',courseRoutes);
 
+import roadmapRoutes from './routes/roadmap.route.js';
+
+app.use('/api',roadmapRoutes);
+
 export { app };

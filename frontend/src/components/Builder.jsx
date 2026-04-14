@@ -357,7 +357,7 @@ export default function Builder() {
             <div className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 p-6">
               <div className="bg-[#16181c] border border-[#2a2d34] rounded-2xl p-10 max-w-xl w-full flex flex-col items-center gap-6">
 
-                <LoaderOne size={48} className="text-[#7c7cff]" />
+                <LoaderOne size={48} />
                 <p className="text-[#f0ede8]">Generating your resume PDF...</p>
               </div>
             </div>

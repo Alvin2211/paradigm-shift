@@ -1,11 +1,10 @@
-import Navbar from './components/Navbar.jsx'
-import Home from './components/Home.jsx'
 import Landingpage from './pages/Landingpage.jsx'
 import Homepage from './pages/Homepage.jsx'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ResumeBuilder from './pages/ResumeBuilder.jsx';
-import ProtectedRoute from './middlewares/ProtectedRoutes.jsx';
 import Courses from './pages/Courses.jsx';
+import Roadmap from './pages/Roadmap.jsx';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './middlewares/ProtectedRoutes.jsx';
 function App() {
   
   
@@ -36,6 +35,14 @@ function App() {
       element={
         <ProtectedRoute>
           <Courses />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/roadmap"
+      element={
+        <ProtectedRoute>
+          <Roadmap />
         </ProtectedRoute>
       }
     />

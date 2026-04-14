@@ -3,11 +3,7 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 
 def run_resume_llm(extracted_text: str) -> dict:
-    """
-    Extract resume data and generate 3 career recommendations using LLM.
-    Returns a Python Dictionary (parsed JSON).
-    """
-
+    
     parser = JsonOutputParser()
 
     json_schema = """

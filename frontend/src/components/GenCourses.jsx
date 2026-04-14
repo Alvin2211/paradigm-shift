@@ -1,6 +1,6 @@
 import React, { use } from 'react'
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LoaderOne } from "@/components/ui/loader";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertTriangleIcon } from "lucide-react"
@@ -12,27 +12,27 @@ const GenCourses = () => {
     const [isResult, setIsResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [showError, setShowError] = useState(false);
+    const[errorMessage,setErrorMessage] = useState("");
+    
+    useEffect(() => {
+        if (showError) {
+            const timer = setTimeout(() => {
+                setShowError(false);
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [showError]);
 
     const handleSubmitClick = async () => {
-
-        if (!isLoaded || !isSignedIn) {
-            alert("User not authenticated");
-            return;
-        }
-
         const token = await getToken();
-        if (!token) {
-            alert("Token not found");
-            return;
-        }
-
         const queryvalue = document.getElementById("user-input").value;
-        if (!queryvalue) {
+        if (!queryvalue || queryvalue.trim() === "" || queryvalue.length < 3 || queryvalue.length > 25) {
+            setErrorMessage("Please enter a valid skill or job title to get course recommendations.");
             setShowError(true);
             return;
         }
         setLoading(true);
-        setShowError(false);
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/courses`, {
                 params: { query: queryvalue },
@@ -43,34 +43,41 @@ const GenCourses = () => {
 
             if (!response.data) {
                 console.log("No course data received");
+                setErrorMessage("Server error. Please try again later :) ");
+                setShowError(true);
+                return;
             }
             setIsResult(response.data.data);
         } catch (error) {
             console.error("Error fetching courses:", error);
+            setErrorMessage("Server Error.Failed to fetch courses. Please try again later.");
+            setShowError(true);
         } finally {
             setLoading(false);
         }
     }
-    const mpp ={
-        "Guided Project" : "projects",
+    const mpp = {
+        "Guided Project": "projects",
         "Course": "learn",
         "Specialization": "specializations",
         "Professional Certificate": "professional-certificates",
-        "Project":"projects"
+        "Project": "projects"
     }
 
     return (
 
         <section className='bg-dot-pattern min-h-screen bg-black text-white py-8'>
-            {showError && (
+            <div
+                className={`w-full flex justify-center transition-all duration-500 ease-in-out overflow-hidden
+                        ${showError ? "opacity-100 translate-y-0 max-h-40 mb-4" : "opacity-0 -translate-y-2 max-h-0"}`}>
                 <Alert className="max-w-md border-amber-200 bg-amber-50 text-amber-900">
                     <AlertTriangleIcon />
-                    <AlertTitle>Input Required</AlertTitle>
+                    <AlertTitle>Error</AlertTitle>
                     <AlertDescription>
-                        Please enter a job title so we can suggest the best courses for you.
+                        {errorMessage}
                     </AlertDescription>
                 </Alert>
-            )}
+            </div>
             {!isResult && !loading && (
                 <div className='flex flex-col items-center justify-center gap-10 p-10 '>
                     <h1 className='text-4xl md:text-5xl text-center  font-bold'>Get Personalised Course Recommendations</h1>
@@ -111,9 +118,9 @@ const GenCourses = () => {
                 <div className='flex flex-col items-center justify-center gap-10 p-10'>
                     <h1 className='text-4xl md:text-5xl text-center  font-bold'>Top Matches for Your Career Goals</h1>
 
-                    <div className='flex gap-4 flex-nowrap justify-center px-10'>
+                    <div className="flex flex-col gap-5 lg:flex-row lg:gap-4 lg:flex-nowrap lg:justify-center lg:px-10">
                         {isResult.map((course, i) => (
-                            <div key={i} className='flex flex-col gap-3 bg-black border border-gray-600 text-white rounded-2xl p-5 flex-1 min-w-0 hover:scale-105 transition-transform duration-300'>  
+                            <div key={i} className='flex flex-col gap-3 bg-black border border-gray-600 text-white rounded-2xl p-5 flex-1 min-w-0 hover:scale-105 transition-transform duration-300'>
 
                                 <div className='flex items-center justify-between'>
                                     <div className='flex items-center gap-1.5'>

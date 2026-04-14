@@ -3,10 +3,10 @@ import { parseResume } from "../controllers/resume.controller.js";
 import { genresume } from "../controllers/generate.controller.js";
 import upload from "../middlewares/multer.middleware.js";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
-
+import {resumelimiter} from "../middlewares/rateLimiter.js";
 
 const router = Router();
 
-router.route("/uploadresume").post(ClerkExpressRequireAuth(),upload.single('file'),parseResume);
-router.route("/generateresume").post(ClerkExpressRequireAuth(),genresume);
+router.route("/uploadresume").post(ClerkExpressRequireAuth(),resumelimiter,upload.single('file'),parseResume);
+router.route("/generateresume").post(ClerkExpressRequireAuth(),genresume); //will be removed later
 export default router;
